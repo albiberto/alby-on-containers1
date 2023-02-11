@@ -1,0 +1,49 @@
+@page "/categories"
+@using Microsoft.Extensions.Localization
+@using AlbyOnContainers.ProductDataManager.Models
+@inject IStringLocalizer<Categories> L
+
+<PageTitle>Categories</PageTitle>
+<div class="row" style="margin-bottom: 1rem">
+    <div class="col-12 col-md-6">
+        <RadzenText Text="@L.GetString("categories")" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0"/>
+    </div>
+    <div class="col-12 col-md-6 justify-content-start justify-content-md-end" style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem">
+        <RadzenSplitButton Icon="get_app" style="margin-left: 10px; margin-bottom: 10px" Text="Export" Click="@ExportClick" Variant="Variant.Flat" Shade="Shade.Lighter">
+            <RadzenSplitButtonItem Text="Excel" Value="xlsx"/>
+            <RadzenSplitButtonItem Text="CSV" Value="csv"/>
+        </RadzenSplitButton>
+        <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <RadzenDataGrid @ref="_grid"
+                        TItem="Category"
+                        AllowFiltering="true"
+                        FilterMode="FilterMode.Simple"
+                        AllowSorting="true"
+                        AllowColumnResize="true"
+                        ExpandMode="DataGridExpandMode.Single"
+                        Data="@_categories"
+                        RowRender="@RowRender"
+                        LoadChildData="@LoadChildData">
+            <Columns>
+                <RadzenDataGridColumn TItem="Category" Property="Name" Title="Name"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Category" Property="Description" Title="Description"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Category" Filterable="false" Sortable="false" Width="100px" TextAlign="TextAlign.Center">
+                    <Template Context="category">
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Warning" Icon="edit" Size="ButtonSize.Medium"
+                                      Shade="Shade.Lighter" Variant="Variant.Flat"
+                                      Click=@(() => EditRow(category)) @onclick:stopPropagation="true"/>
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                                      Shade="Shade.Lighter" Variant="Variant.Flat"
+                                      Click=@(args => GridDeleteButtonClick(args, category)) @onclick:stopPropagation="true"/>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>
