@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Radzen;
 using Radzen.Blazor;
@@ -21,50 +23,118 @@ public partial class Categories
 
     private IEnumerable<Category> _categories;
     private RadzenDataGrid<Category> _grid;
-    
-    protected override async Task OnInitializedAsync() => _categories = Context.Categories.Where(e => e.ParentId == null);
 
-    private void LoadChildData(DataGridLoadChildDataEventArgs<Category> args) => args.Data = Context.Categories.Where(e => e.ParentId == args.Item.Id).ToList();
+    private Category _categoryToInsert;
+    private Category _categoryToUpdate;
+    
+    protected override async Task OnInitializedAsync() => _categories = Context.Categories.Include(c => c.Categories).Where(e => e.ParentId == null);
+
+    private void LoadChildData(DataGridLoadChildDataEventArgs<Category> args)
+    {
+        foreach (var category in args.Item.Categories)
+        {
+            var children = Context.Categories.Where(e => e.ParentId == category.Id).ToList();
+            category.Categories = children;
+
+        }
+
+        args.Data = args.Item.Categories;
+    }
 
     // Disable inspection because it causes multiple database calls.
     // ReSharper disable once ReplaceWithSingleCallToAny
-    private void RowRender(RowRenderEventArgs<Category> args) => args.Expandable = Context.Categories.Where(e => e.ParentId == args.Data.Id).Any();
+    private void RowRender(RowRenderEventArgs<Category> args) => args.Expandable = args.Data.Categories.Any();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender) await _grid.ExpandRow(_categories.FirstOrDefault());
     }
 
-    private async Task AddButtonClick(MouseEventArgs args)
+    private void Reset()
     {
-        await DialogService.OpenAsync<AddCategory>("Add Category", null);
-        await _grid.Reload();
+        _categoryToInsert = null;
+        _categoryToUpdate = null;
     }
 
-    private async Task EditRow(Entity args) => await DialogService.OpenAsync<EditCategory>("Edit Category", new() { {"Id", args.Id} });
-
-    private async Task GridDeleteButtonClick(MouseEventArgs args, Category category)
+    private async Task EditRow(Category category)
     {
-        try
-        {
-            if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
-            {
-                var deleteResult = await CategoryService.DeleteCategory(category.Id);
+        _categoryToUpdate = category;
+        await _grid.EditRow(category);
+    }
 
-                if (deleteResult != null)
-                {
-                    await _grid.Reload();
-                }
-            }
-        }
-        catch (Exception ex)
+    private async Task OnUpdateRow(Category category)
+    {
+        if (category == _categoryToInsert) _categoryToInsert = null;
+
+        _categoryToUpdate = null;
+
+        Context.Update(category);
+        
+        await Context.SaveChangesAsync();
+    }
+
+    private async Task SaveRow(Category order)
+    {
+        await _grid.UpdateRow(order);
+    }
+
+    private void CancelEdit(Category order)
+    {
+        if (order == _categoryToInsert) _categoryToInsert = null;
+
+        _categoryToUpdate = null;
+
+        _grid.CancelEditRow(order);
+
+        // For production
+        var orderEntry = Context.Entry(order);
+       
+        if (orderEntry.State != EntityState.Modified) return;
+        
+        orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+        orderEntry.State = EntityState.Unchanged;
+    }
+
+    private async Task DeleteRow(Category category)
+    {
+        if (await DialogService.Confirm("Are you sure you want to delete this record?") == false) return;
+        
+        if (category == _categoryToInsert)
         {
-            NotificationService.Notify(new()
-            { 
-                Severity = NotificationSeverity.Error,
-                Summary = $"Error", 
-                Detail = $"Unable to delete Category" 
-            });
+            _categoryToInsert = null;
         }
+
+        if (category == _categoryToUpdate)
+        {
+            _categoryToUpdate = null;
+        }
+
+        if (_categories.Contains(category))
+        {
+            Context.Remove(category);
+            
+            await Context.SaveChangesAsync();
+            await _grid.Reload();
+        }
+        else
+        {
+            _grid.CancelEditRow(category);
+            await _grid.Reload();
+        }
+    }
+
+    private async Task InsertRow()
+    {
+        _categoryToInsert = new();
+        await _grid.InsertRow(_categoryToInsert);
+    }
+
+    private async Task OnCreateRow(Category category)
+    {
+        Context.Add(category);
+        
+        await Context.SaveChangesAsync();
+        
+        _categoryToInsert = null;
     }
 
     private async Task ExportClick(RadzenSplitButtonItem args)
