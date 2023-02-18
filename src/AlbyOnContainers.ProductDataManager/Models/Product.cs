@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 public class Product : Entity
 {
     [ConcurrencyCheck]
-    public required Guid CategoryId { get; set; }
+    public Guid? CategoryId { get; set; }
     public Category? Category { get; set; }
 
     public ICollection<Attr>? Attrs { get; set; } = new HashSet<Attr>();
