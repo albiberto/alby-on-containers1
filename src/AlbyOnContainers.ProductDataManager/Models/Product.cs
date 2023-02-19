@@ -11,4 +11,5 @@ public class Product : Entity
     public Category? Category { get; set; }
 
     public ICollection<Attr>? Attrs { get; set; } = new HashSet<Attr>();
+    public ICollection<Descr>? Descrs { get; set; } = new HashSet<Descr>();
 }
