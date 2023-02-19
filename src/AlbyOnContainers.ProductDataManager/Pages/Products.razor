@@ -1,9 +1,8 @@
 ﻿@page "/products"
 @using AlbyOnContainers.ProductDataManager.Models
-@using Microsoft.AspNetCore.Components
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New Product" Click="@InsertRow" Disabled=@(_productToInsert != null || _productToUpdate != null) />
-<RadzenDataGrid 
-    @ref="_grid" 
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New Product" Click="@InsertRow" Disabled="@(_productToInsert != null || _productToUpdate != null)"/>
+<RadzenDataGrid
+    @ref="_grid"
     TItem="Product"
     IsLoading="@_isLoading" Count="@_count" Data="@_products" LoadData="@LoadData"
     AllowAlternatingRows="false"
@@ -18,12 +17,7 @@
         <RadzenTabs>
             <Tabs>
                 <RadzenTabsItem Text="Attributes">
-                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@product.Attrs" TItem="Attr">
-                        <Columns>
-                            <RadzenDataGridColumn TItem="Attr" Property="Name" Title="Name"/>
-                            <RadzenDataGridColumn TItem="Attr" Property="Description" Title="description"/>
-                        </Columns>
-                    </RadzenDataGrid>
+                    <ProductAttrs Product="product"></ProductAttrs>
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="Descriptions">
                 </RadzenTabsItem>

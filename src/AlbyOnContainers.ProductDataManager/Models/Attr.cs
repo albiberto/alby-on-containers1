@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations;
 public class Attr : Entity
 {
     [ConcurrencyCheck]
-    public required Guid ProductId { get; set; }
+    public Guid ProductId { get; set; }
 
     [ConcurrencyCheck]
-    public required Guid AttrTypeId { get; set; }
+    public Guid AttrTypeId { get; set; }
         
     public AttrType? AttrType { get; set; }
 
