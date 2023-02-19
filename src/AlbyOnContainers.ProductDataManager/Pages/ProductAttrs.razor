@@ -13,7 +13,11 @@
         RowCreate="@OnCreateRow"
         Sort="@Reset" Page="@Reset" Filter="@Reset">
     <Columns>
-        <RadzenDataGridColumn TItem="Attr" Property="AttrType.Name" Title="Attr" Width="280px">
+        <RadzenDataGridColumn TItem="Attr" Property="AttrType.Name" Title="Attr" Width="280px" Type="typeof(IEnumerable<string>)" FilterValue="@_selectedType" FilterOperator="FilterOperator.Contains">
+            <FilterTemplate>
+                <RadzenDropDown @bind-Value=@_selectedType Style="width:100%;"
+                Change=@OnSelectedCompanyNamesChange Data="@(_types)" TextProperty="Name" ValueProperty="Name" AllowClear="true" Multiple="true" />
+            </FilterTemplate>
             <EditTemplate Context="attr">
                 <RadzenDropDown @bind-Value="attr.AttrTypeId" Data="@_types" TextProperty="Name" ValueProperty="Id" Style="width:100%; display: block;"/>
             </EditTemplate>

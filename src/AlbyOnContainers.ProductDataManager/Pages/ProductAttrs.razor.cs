@@ -3,6 +3,7 @@ using AlbyOnContainers.ProductDataManager.Models;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using Radzen;
 using Radzen.Blazor;
 
 namespace AlbyOnContainers.ProductDataManager.Pages;
@@ -11,7 +12,10 @@ public partial class ProductAttrs
 {
     [Parameter] public Product Product { get; set; }
     [Inject] private ProductContext Context { get; set; }
+    [Inject] private DialogService DialogService { get; set; }
+
     private IEnumerable<AttrType> _types;
+    private IEnumerable<string> _selectedType;
 
     protected override void OnInitialized()
     {
@@ -21,6 +25,14 @@ public partial class ProductAttrs
     private RadzenDataGrid<Attr> _grid;
     private IList<Attr> _attrs;
 
+    private void OnSelectedCompanyNamesChange(object value)
+    {
+        if (_selectedType != null && !_selectedType.Any())
+        {
+            _selectedType = null;  
+        }
+    }
+    
     private void Reset()
     {
         _attrToInsert = null;
@@ -70,6 +82,8 @@ public partial class ProductAttrs
 
     private async Task DeleteRow(Attr attr)
     {
+        if (await DialogService.Confirm("Are you sure you want to delete this record?") == false) return;
+
         if (attr == _attrToInsert)
         {
             _attrToInsert = null;
@@ -80,7 +94,7 @@ public partial class ProductAttrs
             _attrToUpdate = null;
         }
 
-        if (_attrs.Contains(attr))
+        if (Product.Attrs.Contains(attr))
         {
             Context.Remove(attr);
 
