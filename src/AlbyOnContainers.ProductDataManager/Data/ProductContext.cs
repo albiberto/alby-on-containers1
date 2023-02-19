@@ -23,38 +23,47 @@ public partial class ProductContext : DbContext
         });
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
+        base.OnModelCreating(modelBuilder);
 
-        builder.Entity<Product>()
+        modelBuilder.Entity<Product>()
             .HasOne(i => i.Category)
             .WithMany(i => i.Products)
             .HasForeignKey(i => i.CategoryId)
             .HasPrincipalKey(i => i.Id);
 
-        builder.Entity<Attr>()
+        modelBuilder.Entity<Attr>()
             .HasOne(i => i.AttrType)
             .WithMany(i => i.Attrs)
             .HasForeignKey(i => i.AttrTypeId)
             .HasPrincipalKey(i => i.Id);
 
-        builder.Entity<Attr>()
+        modelBuilder.Entity<Attr>()
             .HasOne(i => i.Product)
             .WithMany(i => i.Attrs)
             .HasForeignKey(i => i.ProductId)
             .HasPrincipalKey(i => i.Id);
 
-        builder.Entity<Category>()
+        modelBuilder.Entity<Category>()
             .HasOne(i => i.Parent)
             .WithMany(i => i.Categories)
             .HasForeignKey(i => i.ParentId)
             .IsRequired(false)
             .HasPrincipalKey(i => i.Id);
 
-        builder
-            .Entity<CategoryLevel>()
-            .ToView("categories_view");
+        modelBuilder.Entity<DescrTypeCategory>().HasKey(dc => dc.Id);
+
+        modelBuilder.Entity<DescrTypeCategory>()
+            .HasOne(sc => sc.Category)
+            .WithMany(s => s.DescrTypeCategories)
+            .HasForeignKey(sc => sc.CategoryId);
+
+
+        modelBuilder.Entity<DescrTypeCategory>()
+            .HasOne(sc => sc.DescrType)
+            .WithMany(s => s.DescrTypeCategories)
+            .HasForeignKey(sc => sc.DescrTypeId);
     }
 
     public DbSet<Product> Products { get; set; }
