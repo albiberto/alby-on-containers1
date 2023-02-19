@@ -58,12 +58,16 @@ public partial class ProductContext : DbContext
             .HasOne(sc => sc.Category)
             .WithMany(s => s.DescrTypeCategories)
             .HasForeignKey(sc => sc.CategoryId);
-
-
+        
         modelBuilder.Entity<DescrTypeCategory>()
             .HasOne(sc => sc.DescrType)
             .WithMany(s => s.DescrTypeCategories)
             .HasForeignKey(sc => sc.DescrTypeId);
+
+        modelBuilder.Entity<DescrDetail>()
+            .HasOne(dd => dd.DescrType)
+            .WithMany(dt => dt.DescrDetails)
+            .HasForeignKey(dd => dd.DescrTypeId);
     }
 
     public DbSet<Product> Products { get; set; }
