@@ -39,7 +39,14 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Category" Width="280px">
             <EditTemplate Context="product">
-                <RadzenDropDown @bind-Value="product.CategoryId" Data="@_categories" TextProperty="Name" ValueProperty="Id" Style="width:100%; display: block;"/>
+                <RadzenDropDownDataGrid 
+                    @bind-Value="product.CategoryId" 
+                    AllowSorting="true"
+                    AllowFiltering="true"
+                    Data="@_categories" LoadData="LoadDataCategories" Count="_categoriescount"
+                    TextProperty="Name" 
+                    ValueProperty="Id" 
+                    Style="width:100%; display: block;"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Product" Context="product" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
