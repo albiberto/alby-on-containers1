@@ -14,4 +14,5 @@ public class Category : Entity
     public ICollection<Product> Products { get; set; } = new HashSet<Product>();
     public ICollection<Category> Categories { get; set; } = new HashSet<Category>();
     public ICollection<DescrTypeCategory> DescrTypeCategories { get; set; } = new HashSet<DescrTypeCategory>();
+    public ICollection<AttrTypeCategories> AttrTypeCategories { get; set; } = new HashSet<AttrTypeCategories>();
 }
