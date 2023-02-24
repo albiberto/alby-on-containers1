@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @using AlbyOnContainers.ProductDataManager.Models
+@using AlbyOnContainers.ProductDataManager.Components
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New Product" Click="@InsertRow" Disabled="@(_productToInsert != null || _productToUpdate != null)"/>
 <RadzenDataGrid
     @ref="_grid"
@@ -39,14 +40,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Product" Property="Category.Name" Title="Category" Width="280px">
             <EditTemplate Context="product">
-                <RadzenDropDownDataGrid 
-                    @bind-Value="product.CategoryId" 
-                    AllowSorting="true"
-                    AllowFiltering="true"
-                    Data="@_categories" LoadData="LoadDataCategories" Count="_categoriescount"
-                    TextProperty="Name" 
-                    ValueProperty="Id" 
-                    Style="width:100%; display: block;"/>
+                <DropDownSingleDataGrid @bind-Value="product.Category"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Product" Context="product" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">

@@ -16,9 +16,9 @@ public partial class Products
 
     private RadzenDataGrid<Product> _grid;
     private IQueryable<Product> _products;
-    private IList<Category> _categories;
     private int _count;
-    private int _categoriescount;
+
+
     private bool _isLoading;
     
     private Product _productToInsert;
@@ -29,36 +29,7 @@ public partial class Products
     //     _categories = Context.Categories.ToList();
     // }
 
-    void LoadDataCategories(LoadDataArgs args)
-    {
-        var query = Context.Categories.AsQueryable();
 
-        if (!string.IsNullOrEmpty(args.Filter))
-        {
-            query = query.Where(c => c.Name.ToLower().Contains(args.Filter.ToLower()));
-        }
-
-        _categoriescount = query.Count();
-
-        if (!string.IsNullOrEmpty(args.OrderBy))
-        {
-            query = query.OrderBy(args.OrderBy);
-        }
-
-        if (args.Skip != null)
-        {
-            query = query.Skip(args.Skip.Value);
-        }
-
-        if (args.Top != null)
-        {
-            query = query.Take(args.Top.Value);
-        }
-
-        _categories = query.ToList();
-
-        InvokeAsync(StateHasChanged);
-    }
 
     private void Reset()
     {
