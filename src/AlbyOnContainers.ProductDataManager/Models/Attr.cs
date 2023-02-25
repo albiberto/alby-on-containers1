@@ -2,6 +2,7 @@ namespace AlbyOnContainers.ProductDataManager.Models;
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using Abstract;
 
 public class Attr : Entity
 {

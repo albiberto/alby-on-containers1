@@ -27,57 +27,17 @@ public partial class ProductContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Product>()
-            .HasOne(i => i.Category)
-            .WithMany(i => i.Products)
-            .HasForeignKey(i => i.CategoryId)
-            .HasPrincipalKey(i => i.Id);
+        modelBuilder
+            .BuildProduct()
+            .BuildCategory()
+            .BuildDescriptions();
+    }
 
-        modelBuilder.Entity<Attr>()
-            .HasOne(i => i.AttrType)
-            .WithMany(i => i.Attrs)
-            .HasForeignKey(i => i.AttrTypeId)
-            .HasPrincipalKey(i => i.Id);
 
-        modelBuilder.Entity<Attr>()
-            .HasOne(i => i.Product)
-            .WithMany(i => i.Attrs)
-            .HasForeignKey(i => i.ProductId)
-            .HasPrincipalKey(i => i.Id);
 
-        modelBuilder.Entity<Category>()
-            .HasOne(i => i.Parent)
-            .WithMany(i => i.Categories)
-            .HasForeignKey(i => i.ParentId)
-            .IsRequired(false)
-            .HasPrincipalKey(i => i.Id);
-
-        modelBuilder.Entity<DescrTypeCategory>().HasKey(dc => dc.Id);
-
-        modelBuilder.Entity<DescrTypeCategory>()
-            .HasOne(sc => sc.Category)
-            .WithMany(s => s.DescrTypeCategories)
-            .HasForeignKey(sc => sc.CategoryId);
+    private static void BuildAttr(ModelBuilder modelBuilder)
+    {
         
-        modelBuilder.Entity<DescrTypeCategory>()
-            .HasOne(sc => sc.DescrType)
-            .WithMany(s => s.DescrTypeCategories)
-            .HasForeignKey(sc => sc.DescrTypeId);
-
-        modelBuilder.Entity<DescrDetail>()
-            .HasOne(dd => dd.DescrType)
-            .WithMany(dt => dt.DescrDetails)
-            .HasForeignKey(dd => dd.DescrTypeId);
-        
-        modelBuilder.Entity<Descr>()
-            .HasOne(sc => sc.Product)
-            .WithMany(s => s.Descrs)
-            .HasForeignKey(sc => sc.ProductId);
-        
-        modelBuilder.Entity<Descr>()
-            .HasOne(sc => sc.DescrDetail)
-            .WithMany(s => s.Descrs)
-            .HasForeignKey(sc => sc.DescrDetailId);
     }
 
     public DbSet<Product> Products { get; set; }

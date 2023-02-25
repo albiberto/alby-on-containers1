@@ -3,6 +3,7 @@ namespace AlbyOnContainers.ProductDataManager.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Abstract;
 
 public class Product : Entity
 {

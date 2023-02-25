@@ -1,6 +1,7 @@
 @page "/types"
 
 @using AlbyOnContainers.ProductDataManager.Models
+@using AlbyOnContainers.ProductDataManager.Components
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Add New AttrType" Click="@InsertRow" Disabled="@(_typeToInsert != null || _typeToUpdate != null)"/>
 
 <RadzenDataGrid @ref="_grid" 
@@ -26,6 +27,11 @@
                 <RadzenRequiredValidator Text="Description is required" Component="TypeDescription" Popup="true"/>
             </EditTemplate>
         </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="AttrType" Property="Description" Title="Description">
+                    <EditTemplate Context="type">
+                        <DropDownMultiDataGrid></DropDownMultiDataGrid>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="AttrType" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">

@@ -3,6 +3,7 @@ namespace AlbyOnContainers.ProductDataManager.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Abstract;
 using Microsoft.EntityFrameworkCore;
 
 public class Category : Entity
@@ -13,6 +14,6 @@ public class Category : Entity
 
     public ICollection<Product> Products { get; set; } = new HashSet<Product>();
     public ICollection<Category> Categories { get; set; } = new HashSet<Category>();
-    public ICollection<DescrTypeCategory> DescrTypeCategories { get; set; } = new HashSet<DescrTypeCategory>();
-    public ICollection<AttrTypeCategories> AttrTypeCategories { get; set; } = new HashSet<AttrTypeCategories>();
+    public ICollection<CategoryDescrTypes> CategoryDescrTypes { get; set; } = new HashSet<CategoryDescrTypes>();
+    public ICollection<CategoryAttrTypes> CategoryAttrTypes { get; set; } = new HashSet<CategoryAttrTypes>();
 }

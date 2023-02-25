@@ -1,6 +1,8 @@
 ﻿namespace AlbyOnContainers.ProductDataManager.Models;
 
-public class DescrDetail : Entity
+using Abstract;
+
+public class DescrValue : Entity
 {
     public Guid DescrTypeId { get; set; }
     public DescrType DescrType { get; set; }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models;
+using Models.Abstract;
 
 public class EntityInterceptor : SaveChangesInterceptor 
 {
