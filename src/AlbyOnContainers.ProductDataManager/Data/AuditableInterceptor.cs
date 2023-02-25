@@ -5,10 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Models;
 using Models.Abstract;
 
-public class EntityInterceptor : SaveChangesInterceptor 
+public class AuditableInterceptor : SaveChangesInterceptor 
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {

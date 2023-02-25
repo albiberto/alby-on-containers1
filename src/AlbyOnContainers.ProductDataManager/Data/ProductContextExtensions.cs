@@ -9,8 +9,6 @@ public static class ProductContextExtensions
     {
         var product = modelBuilder.Entity<Product>();
 
-        product.HasKey(product => product.Id);
-
         product
             .HasOne(product => product.Category)
             .WithMany(category => category.Products)
@@ -36,8 +34,6 @@ public static class ProductContextExtensions
     {
         var category = modelBuilder.Entity<Category>();
 
-        category.HasKey(category => category.Id);
-
         category
             .HasOne(category => category.Parent)
             .WithMany(category => category.Categories)
@@ -48,13 +44,11 @@ public static class ProductContextExtensions
         return modelBuilder;
     }
 
-    public static ModelBuilder BuildAttribute(this ModelBuilder modelBuilder)
+    public static ModelBuilder BuildAttributes(this ModelBuilder modelBuilder)
     {
         var type = modelBuilder.Entity<AttrType>();
         var join = modelBuilder.Entity<CategoryAttrTypes>();
         var attr = modelBuilder.Entity<Attr>();
-
-        type.HasKey(type => type.Id);
 
         join.HasKey(join => new { join.CategoryId, join.AttrTypeId });
 
@@ -69,8 +63,6 @@ public static class ProductContextExtensions
             .WithMany(s => s.CategoryAttrTypes)
             .HasForeignKey(sc => sc.AttrTypeId)
             .HasConstraintName("FK_AttrType_CategoryAttrTypes");
-
-        attr.HasKey(attr => attr.Id);
 
         attr.HasOne(i => i.AttrType)
             .WithMany(i => i.Attrs)
@@ -87,8 +79,6 @@ public static class ProductContextExtensions
         var descr = modelBuilder.Entity<Descr>();
         var value = modelBuilder.Entity<DescrValue>();
 
-        type.HasKey(type => type.Id);
-
         join.HasKey(join => new { join.CategoryId, join.DescrTypeId });
 
         join
@@ -103,15 +93,11 @@ public static class ProductContextExtensions
             .HasForeignKey(sc => sc.DescrTypeId)
             .HasConstraintName("FK_DescrType_CategoryDescrTypes");
 
-        value.HasKey(value => value.Id);
-
         value
             .HasOne(value => value.DescrType)
             .WithMany(type => type.DescrValues)
             .HasForeignKey(value => value.DescrTypeId)
             .HasConstraintName("FK_DescrType_DescrValues");
-
-        descr.HasKey(descr => descr.Id);
 
         descr
             .HasOne(descr => descr.DescrValue)
